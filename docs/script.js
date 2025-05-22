@@ -47,16 +47,18 @@ if (window.location.pathname.endsWith("index.html")) {
   let stream = null;
 
   // Start the camera
-  navigator.mediaDevices.getUserMedia({ video: true })
-    .then(mediaStream => {
-      stream = mediaStream;
-      video.srcObject = stream;
-      captureBtn.disabled = false;
-      captureBtn.display = 'block';
-    })
-    .catch(err => {
-      console.error("Camera access error:", err);
-    });
+  navigator.mediaDevices.getUserMedia({
+    video: { facingMode: { exact: "environment" } }  // Force back camera
+  })
+  .then(mediaStream => {
+    stream = mediaStream;
+    video.srcObject = stream;
+    captureBtn.disabled = false;
+    captureBtn.style.display = 'block'; // Fix: should be .style.display
+  })
+  .catch(err => {
+    console.error("Camera access error:", err);
+  });
 
   // Capture photo and stop camera
   captureBtn.addEventListener('click', () => {

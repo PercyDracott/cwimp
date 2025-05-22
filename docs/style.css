@@ -112,3 +112,13 @@ body {
 .photobutton:active {
   transform: scale(1.05);  
 }
+
+.photo
+{
+  display: none;
+    position: fixed;
+    top: 120px;
+    bottom: 20px;
+    object-fit: cover;
+    z-index: 1000;
+}
