@@ -39,50 +39,89 @@ if (window.location.pathname.endsWith("index.html")) {
     }, 300);
   }
 
-  const video = document.getElementById('video');
-  const canvas = document.getElementById('canvas');
-  const captureBtn = document.getElementById('capture');
-  const photo = document.getElementById('photo');
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const captureBtn = document.getElementById('capture');
+const photo = document.getElementById('photo');
 
-  let stream = null;
+let stream = null;
+let imageCapture = null;
 
-  // Start the camera
-  navigator.mediaDevices.getUserMedia({
-    video: { facingMode: { exact: "environment" } }  // Force back camera
-  })
-  .then(mediaStream => {
-    stream = mediaStream;
-    video.srcObject = stream;
-    captureBtn.disabled = false;
-    captureBtn.style.display = 'block'; // Fix: should be .style.display
-  })
-  .catch(err => {
-    console.error("Camera access error:", err);
-  });
+async function startCamera() {
+  try {
+    // Try strict back camera first
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { exact: "environment" } }
+    });
+  } catch (err) {
+    console.warn("Back camera not found, falling back to any camera:", err);
 
-  // Capture photo and stop camera
-  captureBtn.addEventListener('click', () => {
-    // Draw the current frame to the canvas
-    const context = canvas.getContext('2d');
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    // Fallback to any camera (front or back)
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: true
+    });
+  }
 
-    // Get image as Base64 JPG
-    const imageDataURL = canvas.toDataURL('image/jpeg');
+  video.srcObject = stream;
 
-    // Show the captured image
-    photo.src = imageDataURL;
-    photo.style.display = 'block';
+  const track = stream.getVideoTracks()[0];
+  if ('ImageCapture' in window) {
+    imageCapture = new ImageCapture(track);
+  }
 
-    // Hide the video feed
-    video.style.display = 'none';
-    
-    setTimeout(function() {
-      captureBtn.disabled = true;
-      captureBtn.style.display = 'none';  
-    }, 300);
+  captureBtn.disabled = false;
+  captureBtn.style.display = 'block';
+}
 
-    // Stop the camera stream
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-    }
-  });
+
+captureBtn.addEventListener('click', () => {
+  if (imageCapture) {
+    // Use ImageCapture API to take photo
+    imageCapture.takePhoto()
+      .then(blob => {
+        const imgUrl = URL.createObjectURL(blob);
+        photo.src = imgUrl;
+        photo.style.display = 'block';
+
+        video.style.display = 'none';
+        captureBtn.disabled = true;
+        captureBtn.style.display = 'none';
+
+        stopCamera();
+      })
+      .catch(err => {
+        console.error('ImageCapture failed, falling back to canvas:', err);
+        captureWithCanvas();
+      });
+  } else {
+    // Fallback to canvas capture
+    captureWithCanvas();
+  }
+});
+
+function captureWithCanvas() {
+  const context = canvas.getContext('2d');
+
+  // Draw current video frame to canvas
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  // Convert to data URL and show
+  const imageDataURL = canvas.toDataURL('image/jpeg');
+  photo.src = imageDataURL;
+  photo.style.display = 'block';
+
+  video.style.display = 'none';
+  captureBtn.disabled = true;
+  captureBtn.style.display = 'none';
+
+  stopCamera();
+}
+
+function stopCamera() {
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop());
+  }
+}
+
+// Start camera on page load
+startCamera();
