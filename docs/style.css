@@ -9,23 +9,56 @@ body {
     height: 100vh;
     font-family: Arial, sans-serif;
   }
-  
+
   .logo {
+    position: fixed;
+    top: 50px;
     width: 400px;
     height: 400px;
+    left: 50%;
     object-fit: contain;
-    padding-top: 100px;
+    transform: translateY(-50%);
+    transform: translateX(-50%);
+    z-index: 1000;
+  
+    transition:
+      width 0.3s ease,
+      height 0.3s ease,
+      top 0.3s ease,
+      transform 0.3s ease;
   }
+  
+  .animation {
+    top: 10px;
+    width: 100px;
+    height: 100px;
+    transform: translateY(-50%);
+    transform: translateX(-50%);
+  }
+  
+  .logoalt {
+    top: 10px;
+    width: 100px;
+    height: 100px;
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    object-fit: contain;
+  }
+  
   
   .image-button {
     background: none;
     border: none;
     padding: 0;
     cursor: pointer;
+    position: fixed;
+    top: 420px;   
   }
   
   .btn-image 
   {
+    
     width: 300px; /* adjust as needed */
     height: auto;
     transition: transform 0.1s ease;
