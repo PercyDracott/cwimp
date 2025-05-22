@@ -2,4 +2,4 @@
 
 # cwimp - Climing Wall IMage Processor
 
-![Diagram](assets/logoMain.png)
+![Diagram](docs/assets/images/logoMain.png)
