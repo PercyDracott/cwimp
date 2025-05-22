@@ -96,29 +96,46 @@ body {
     100% { transform: translateX(-50%) scale(1.05); }
   }
 
-.photobutton
-{
+.photobutton:active {
+  transform: translateX(-50%), scale(1.05);
+}
+
+.feedbackVideo {
+  position: fixed;
+  top: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc((100vh - 120px) * 9 / 16); /* Maintain 9:16 aspect */
+  height: calc(100vh - 120px);
+  object-fit: cover;
+  z-index: 1;
+}
+
+/* Capture button */
+.photobutton {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 80px;
   height: 80px;
-  border-radius: 50%;
   background-color: #011221;
-  border: none;
   cursor: pointer;
-  transition: transform 0.1s ease;
-  position: fixed;
-  bottom: 50px;
+  z-index: 2;
+  transition: transform 0.3s ease;
+  border-width: 0cap;
+  border-radius: 50%;
 }
 
-.photobutton:active {
-  transform: scale(1.05);  
-}
-
-.photo
-{
+/* Captured photo */
+.photo {
   display: none;
-    position: fixed;
-    top: 120px;
-    bottom: 20px;
-    object-fit: cover;
-    z-index: 1000;
+  position: fixed;
+  top: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc((100vh - 120px) * 9 / 16);
+  height: calc(100vh - 120px);
+  object-fit: cover;
+  z-index: 3;
 }
