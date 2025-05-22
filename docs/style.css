@@ -67,7 +67,8 @@ body {
   }
   
  
-.image-button:hover .btn-image {
+.image-button:hover .btn-image 
+{
     transform: scale(1.05); /* Slight hover grow */
   }
   
@@ -94,4 +95,20 @@ body {
     50%  { transform: translateX(-50%) scale(1.15); }
     100% { transform: translateX(-50%) scale(1.05); }
   }
-  
+
+.photobutton
+{
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #011221;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+  position: fixed;
+  bottom: 50px;
+}
+
+.photobutton:active {
+  transform: scale(1.05);  
+}
