@@ -101,16 +101,17 @@ body {
     top: 120px;
     left: 50%;
     transform: translateX(-50%);
-    width: calc((100vh - 120px) * 3 / 4);
-    height: calc(100vh - 120px);
-    object-fit: contain;   /* Change from cover to contain */
-    background-color: black; /* Optional: black bars around video */
+    height: calc(100vh - 140px); /* Fill screen minus top bar */
+    width: calc((100vh - 120px) * 3 / 4); /* 3:4 aspect ratio */
+    object-fit: ; /* Crop to fill */
+    background-color: black;
+    bottom: 20px;
     z-index: 1;
   }
   
   .photobutton {
     position: fixed;
-    bottom: 30px;
+    bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
     width: 80px;
@@ -121,17 +122,18 @@ body {
     cursor: pointer;
     z-index: 2;
   }
-  
-  .photo {
-    display: none;
-    position: fixed;
-    top: 120px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc((100vh - 120px) * 3 / 4);
-    height: calc(100vh - 120px);
-    object-fit: contain;   /* Change from cover to contain */
-    background-color: black; /* Optional: black bars around video */
-    z-index: 3;
-  }
+
+.photo {
+  position: fixed;
+  display: none;
+  top: 120px;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  height: calc(100vh - 140px); /* Fill screen minus top bar */
+  width: calc((100vh - 120px) * 3 / 4); /* 3:4 aspect ratio */
+  object-fit: cover; /* Crop to fill */
+  background-color: black;
+  z-index: 1;
+}
   
