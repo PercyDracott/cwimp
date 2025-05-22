@@ -44,6 +44,8 @@ body {
     left: 50%;
     transform: translateX(-50%);
     object-fit: contain;
+    transition: transform 0.1s ease;
+
   }
   
   
@@ -78,3 +80,18 @@ body {
     50%  { transform: scale(1.15); }
     100% { transform: scale(1.05); }
   }
+
+  .logoalt:hover {
+    transform: translateX(-50%) scale(1.05);
+  }
+  
+  .logoalt.pulse {
+    animation: pulse-grow2 0.3s ease;
+  }
+
+  @keyframes pulse-grow2 {
+    0%   { transform: translateX(-50%) scale(1.05); }
+    50%  { transform: translateX(-50%) scale(1.15); }
+    100% { transform: translateX(-50%) scale(1.05); }
+  }
+  
