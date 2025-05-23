@@ -54,41 +54,40 @@ if (window.location.pathname.endsWith("index.html")) {
     }, 300);
   });
   
-  cameraInput.addEventListener('change', async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-  
-    // Correct orientation using blueimp-load-image
-    loadImage(
-      file,
-      async (canvas) => {
-        if (canvas.type === 'error') {
-          console.error('Error loading image');
-          return;
-        }
-    
-        const imgURL = canvas.toDataURL(file);
-        photo.src = imgURL;
-        photo.style.display = 'block';
-        openCameraBtn.style.display = 'none';
-    
-        canvas.toBlob(async (blob) => {
-          const data = await runInference(blob);
-          addHolds(data, imgURL);
-        }, 'image/jpeg');
-      },
-      {
-        canvas: true,
-        orientation: true,
-        maxWidth: undefined,     // prevent downscaling
-        maxHeight: undefined,
-        minWidth: undefined,
-        minHeight: undefined,
-        crop: false              // don't crop image
+
+cameraInput.addEventListener('change', async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  loadImage(
+    file,
+    async (canvas) => {
+      if (canvas.type === 'error') {
+        console.error('Error loading image');
+        return;
       }
-    );
-  });
-  
+
+      const imgURL = canvas.toDataURL('image/jpeg');  // <-- fixed here
+      photo.src = imgURL;
+      photo.style.display = 'block';
+      openCameraBtn.style.display = 'none';
+
+      canvas.toBlob(async (blob) => {
+        const data = await runInference(blob);
+        addHolds(data, imgURL);
+      }, 'image/jpeg');
+    },
+    {
+      canvas: true,
+      orientation: true,
+      maxWidth: undefined,
+      maxHeight: undefined,
+      minWidth: undefined,
+      minHeight: undefined,
+      crop: false
+    }
+  );
+});
   async function runInference(file) {
     const apiKey = 'UkIWTxUzXiyIaSaGNmj5';
     const modelId = 'hold-detector-rnvkl/2';
@@ -112,27 +111,41 @@ if (window.location.pathname.endsWith("index.html")) {
     }
   }
   
-  function addHolds(data, imgURL) {
-    console.log('add holds called');
+  function addHolds(data, rawFile) {
     const overlay = document.getElementById("overlay");
     const img = document.getElementById("photo");
     const rawImage = new Image();
-    rawImage.src = imgURL;
+    rawImage.src = rawFile;
   
     rawImage.onload = () => {
       const rawWidth = rawImage.naturalWidth;
       const rawHeight = rawImage.naturalHeight;
   
-      overlay.setAttribute("width", img.width);
-      overlay.setAttribute("height", img.height);
+      // Set SVG viewBox to raw image dimensions
+      overlay.setAttribute("viewBox", `0 0 ${rawWidth} ${rawHeight}`);
+  
+      // Set SVG CSS width and height to match displayed image size
+      overlay.style.width = img.width + 'px';
+      overlay.style.height = img.height + 'px';
+  
+      // Position SVG overlay to match the photo position
+      const imgRect = img.getBoundingClientRect();
+      overlay.style.position = 'fixed';
+      overlay.style.top = imgRect.top + 'px';
+      overlay.style.left = imgRect.left + 'px';
+      overlay.style.pointerEvents = 'auto'; // enable polygon clicks
+      overlay.style.display = 'block';
+  
       overlay.innerHTML = "";
   
       for (const pred of data.predictions) {
-        if (pred['confidence'] < 0.4) continue;
+        if (pred['confidence'] < 0.3) continue;
   
+        // Use raw pixel coordinates directly (no scaling)
         const pointsAttr = pred.points
-          .map(p => `${p.x * (img.width / rawWidth)},${p.y * (img.height / rawHeight)}`)
+          .map(p => `${p.x},${p.y}`)
           .join(" ");
+  
         const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
         polygon.setAttribute("points", pointsAttr);
         polygon.setAttribute("class", "hold-button");
@@ -142,6 +155,8 @@ if (window.location.pathname.endsWith("index.html")) {
         polygon.setAttribute("stroke", colors[0]);
         polygon.setAttribute("data-state", "0");
         polygon.setAttribute("stroke-width", "2");
+        polygon.setAttribute("fill", "none");
+        polygon.style.cursor = 'pointer';
   
         polygon.addEventListener("click", () => {
           let currentState = parseInt(polygon.getAttribute("data-state"), 10);
@@ -151,12 +166,25 @@ if (window.location.pathname.endsWith("index.html")) {
           polygon.setAttribute("stroke-width", colors[nextState] === 'white' ? "2" : "5");
         });
   
-        console.log('hold added');
         overlay.appendChild(polygon);
       }
     };
   }
   
+
+  window.addEventListener('resize', () => {
+    const img = document.getElementById("photo");
+    const overlay = document.getElementById("overlay");
+  
+    if (!img || !overlay || overlay.style.display === 'none') return;
+  
+    overlay.style.width = img.width + 'px';
+    overlay.style.height = img.height + 'px';
+  
+    const imgRect = img.getBoundingClientRect();
+    overlay.style.top = imgRect.top + 'px';
+    overlay.style.left = imgRect.left + 'px';
+  });
   
 
 

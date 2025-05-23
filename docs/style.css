@@ -137,31 +137,25 @@ body {
     animation: pulse-grow2 0.3s ease;
   }
 
-.photo {
-  position: fixed;
-  display: none;
+  .photo {
+    position: fixed;
   top: 120px;
   left: 50%;
-  bottom: 20px;
   transform: translateX(-50%);
-  max-height: calc(100vh - 140px); /* Fill screen minus top bar */
-  max-width: calc(100vh - 120px);
-  
-  
+  width: 100vw;
+  height: auto;
+  max-height: calc(100vh - 140px);
   background-color: #0B5FA1;
   z-index: 1;
-}
+  object-fit: contain;
+  }
 
 svg {
+  pointer-events: none;
   position: fixed;
-  pointer-events: none; /* allows clicks to pass through if needed */
-  top: 120px;
-  left: 50%;
-  bottom: 20px;
-  transform: translateX(-50%);
-  max-height: calc(100vh - 140px); /* Fill screen minus top bar */
-  max-width: calc(100vh - 120px);
-  
+  z-index: 12;
+  background-color: transparent; /* or remove if you want */
+  /* remove width, height, top, left, transform */
 }
 
 .hold-button {
