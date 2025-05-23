@@ -96,48 +96,52 @@ if (window.location.pathname.endsWith("index.html")) {
     }
   }
 
-  function addHolds(data, rawFile)
-  {
+  function addHolds(data, rawFile) {
     console.log('add holds called');
     const overlay = document.getElementById("overlay");
     const img = document.getElementById("photo");
     const rawImage = new Image();
     rawImage.src = rawFile;
-
-    overlay.setAttribute("width", img.width);
+  
+    rawImage.onload = () => {
+      const rawWidth = rawImage.naturalWidth;
+      const rawHeight = rawImage.naturalHeight;
+  
+      overlay.setAttribute("width", img.width);
       overlay.setAttribute("height", img.height);
       overlay.innerHTML = "";
-
-
+  
       for (const pred of data.predictions) {
-        const pointsAttr = pred.points.map(p => `${p.x * (img.width / rawImage.width)},${p.y * (img.height / rawImage.height)}`).join(" ");
+        if (pred['confidence'] < 0.3) continue;
+        
+
+        const pointsAttr = pred.points
+          .map(p => `${p.x * (img.width / rawWidth)},${p.y * (img.height / rawHeight)}`)
+          .join(" ");
         const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
         polygon.setAttribute("points", pointsAttr);
         polygon.setAttribute("class", "hold-button");
-        
-        
-
-        const colors = ['white', 'green', 'blue', 'yellow', 'purple'];
-
-        polygon.setAttribute("stroke", colors[0]); // Start with white
+  
+        const colors = ['white', 'cyan', 'lime', 'yellow', 'fuchsia'];
+  
+        polygon.setAttribute("stroke", colors[0]);
         polygon.setAttribute("data-state", "0");
         polygon.setAttribute("stroke-width", "2");
-
+  
         polygon.addEventListener("click", () => {
           let currentState = parseInt(polygon.getAttribute("data-state"), 10);
           let nextState = (currentState + 1) % colors.length;
-        polygon.setAttribute("stroke", colors[nextState]);
-        polygon.setAttribute("data-state", nextState);
-        if (colors[nextState] === 'white') {
-          polygon.setAttribute("stroke-width", "2");
-        } else {
-          polygon.setAttribute("stroke-width", "5");
-        }
+          polygon.setAttribute("stroke", colors[nextState]);
+          polygon.setAttribute("data-state", nextState);
+          polygon.setAttribute("stroke-width", colors[nextState] === 'white' ? "2" : "5");
         });
+  
         console.log('hold added');
         overlay.appendChild(polygon);
       }
+    };
   }
+  
 
 
 
