@@ -1,5 +1,8 @@
 const logo = document.getElementById('logo');
 
+const cameraInput = document.getElementById('cameraInput');
+const openCameraBtn = document.getElementById('openCameraBtn');
+const photo = document.getElementById('photo');
 
 if (window.location.pathname.endsWith("index.html")) {
   const btn = document.querySelector('.image-button');
@@ -23,6 +26,7 @@ if (window.location.pathname.endsWith("index.html")) {
     logo.classList.toggle('animation');
     setTimeout(function() {
       window.location.href = 'cameraPage.html'; // Change this to your actual page
+      
     }, 300);
   }
 
@@ -39,9 +43,6 @@ if (window.location.pathname.endsWith("index.html")) {
     }, 300);
   }
 
-  const cameraInput = document.getElementById('cameraInput');
-  const openCameraBtn = document.getElementById('openCameraBtn');
-  const photo = document.getElementById('photo');
   
   openCameraBtn.addEventListener('click', () => {
     openCameraBtn.classList.remove("pulse");
@@ -53,7 +54,7 @@ if (window.location.pathname.endsWith("index.html")) {
     }, 300);
   });
   
-  cameraInput.addEventListener('change', (event) => {
+  cameraInput.addEventListener('change', async (event) => {
     const file = event.target.files[0];
     if (!file) return;
   
@@ -63,5 +64,64 @@ if (window.location.pathname.endsWith("index.html")) {
   
     // Optionally, hide the button after photo is taken
     openCameraBtn.style.display = 'none';
+  
+    // Run inference
+    const data = await runInference(file);
+    addHolds(data, imgURL);
   });
+  
+  async function runInference(file) {
+    const apiKey = 'UkIWTxUzXiyIaSaGNmj5';
+    const modelId = 'hold-detector-rnvkl/2';
+    const url = `https://detect.roboflow.com/${modelId}?api_key=${apiKey}`;
+  
+    const formData = new FormData();
+    formData.append('file', file);
+  
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData
+      });
+  
+      const result = await response.json();
+      console.log('Inference result:', result);
+      
+      // Optional: Call a function to draw results on the image
+      // drawDetections(result, photo);
+      return result;
+
+    } catch (error) {
+      console.error('Inference error:', error);
+    }
+  }
+
+  function addHolds(data, rawFile)
+  {
+    console.log('add holds called');
+    const overlay = document.getElementById("overlay");
+    const img = document.getElementById("photo");
+    const rawImage = new Image();
+    rawImage.src = rawFile;
+
+    overlay.setAttribute("width", img.width);
+      overlay.setAttribute("height", img.height);
+      overlay.innerHTML = "";
+
+
+      for (const pred of data.predictions) {
+        const pointsAttr = pred.points.map(p => `${p.x * (img.width / rawImage.width)},${p.y * (img.height / rawImage.height)}`).join(" ");
+        const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+        polygon.setAttribute("points", pointsAttr);
+        polygon.setAttribute("class", "hold-button");
+
+        polygon.addEventListener("click", () => {
+          alert(`Clicked hold ID: ${pred.detection_id}`);
+        });
+        
+        console.log('hold added');
+        overlay.appendChild(polygon);
+      }
+  }
+
   

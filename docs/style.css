@@ -7,7 +7,13 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    font-family: Arial, sans-serif;
+    
+  }
+
+  h1
+  {
+    font-family: monospace;
+    color: #0B5FA1; 
   }
 
   .logo {
@@ -138,10 +144,39 @@ body {
   left: 50%;
   bottom: 20px;
   transform: translateX(-50%);
-  height: calc(100vh - 140px); /* Fill screen minus top bar */
-  width: calc((100vh - 120px) * 3 / 4); /* 3:4 aspect ratio */
-  object-fit: cover; /* Crop to fill */
+  max-height: calc(100vh - 140px); /* Fill screen minus top bar */
+  max-width: calc(100vh - 120px);
+  
+  object-fit: contain; /* Crop to fill */
   background-color: #0B5FA1;
   z-index: 1;
 }
+
+svg {
+  position: fixed;
+  pointer-events: none; /* allows clicks to pass through if needed */
+  top: 120px;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  max-height: calc(100vh - 140px); /* Fill screen minus top bar */
+  max-width: calc(100vh - 120px);
+  
+}
+.hold-button {
+  
+  stroke: white;
+  stroke-width: 2;
+  cursor: pointer;
+  pointer-events: all;
+  z-index: 1000;
+}
+.hold-button:hover {
+  fill: rgba(0, 255, 0, 0.5);
+}
+
+.container {
+   /* 3:4 aspect ratio */
+}
+
   
