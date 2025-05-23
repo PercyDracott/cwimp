@@ -163,20 +163,18 @@ svg {
   max-width: calc(100vh - 120px);
   
 }
+
 .hold-button {
-  
-  stroke: white;
-  stroke-width: 2;
+  fill: rgba(0, 0, 0, 0.0); 
   cursor: pointer;
   pointer-events: all;
   z-index: 1000;
 }
-.hold-button:hover {
-  fill: rgba(0, 255, 0, 0.5);
-}
 
-.container {
-   /* 3:4 aspect ratio */
+
+#overlay {
+  z-index: 1000; /* Make sure SVG is above the image */
+  pointer-events: none; /* unless you want to capture clicks */
 }
 
   

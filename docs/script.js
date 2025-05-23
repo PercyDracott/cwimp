@@ -114,14 +114,31 @@ if (window.location.pathname.endsWith("index.html")) {
         const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
         polygon.setAttribute("points", pointsAttr);
         polygon.setAttribute("class", "hold-button");
+        
+        
+
+        const colors = ['white', 'green', 'blue', 'yellow', 'purple'];
+
+        polygon.setAttribute("stroke", colors[0]); // Start with white
+        polygon.setAttribute("data-state", "0");
+        polygon.setAttribute("stroke-width", "2");
 
         polygon.addEventListener("click", () => {
-          alert(`Clicked hold ID: ${pred.detection_id}`);
+          let currentState = parseInt(polygon.getAttribute("data-state"), 10);
+          let nextState = (currentState + 1) % colors.length;
+        polygon.setAttribute("stroke", colors[nextState]);
+        polygon.setAttribute("data-state", nextState);
+        if (colors[nextState] === 'white') {
+          polygon.setAttribute("stroke-width", "2");
+        } else {
+          polygon.setAttribute("stroke-width", "5");
+        }
         });
-        
         console.log('hold added');
         overlay.appendChild(polygon);
       }
   }
+
+
 
   
