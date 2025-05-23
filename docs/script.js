@@ -66,23 +66,25 @@ if (window.location.pathname.endsWith("index.html")) {
           console.error('Error loading image');
           return;
         }
-  
-        // Convert canvas to data URL for display
+    
         const imgURL = canvas.toDataURL('image/jpeg');
         photo.src = imgURL;
         photo.style.display = 'block';
-  
         openCameraBtn.style.display = 'none';
-  
-        // Convert canvas to blob for inference
+    
         canvas.toBlob(async (blob) => {
           const data = await runInference(blob);
-          addHolds(data, imgURL); // Use rotated image for overlay
+          addHolds(data, imgURL);
         }, 'image/jpeg');
       },
       {
         canvas: true,
-        orientation: true
+        orientation: true,
+        maxWidth: undefined,     // prevent downscaling
+        maxHeight: undefined,
+        minWidth: undefined,
+        minHeight: undefined,
+        crop: false              // don't crop image
       }
     );
   });

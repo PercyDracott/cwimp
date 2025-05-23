@@ -147,7 +147,7 @@ body {
   max-height: calc(100vh - 140px); /* Fill screen minus top bar */
   max-width: calc(100vh - 120px);
   
-  object-fit: contain; /* Crop to fill */
+  
   background-color: #0B5FA1;
   z-index: 1;
 }
