@@ -11,10 +11,10 @@
         <img src="images/logoMain.png" alt="Logo" id="logoalt" class="logoalt" onclick="backButton()"/>
     </header>
   
-    <video id="video" class="feedbackVideo" autoplay playsinline></video>
-<button id="capture" class="photobutton" disabled></button>
-<canvas id="canvas" style="display: none;"></canvas>
-<img id="photo" class="photo" />
+    <input type="file" accept="image/*" capture="environment" id="cameraInput" style="display:none;" />
+    <button id="openCameraBtn" class="photobutton">+</button>
+    <img id="photo" class="photo" style="display:none;" />
+
 
     <script src="script.js"></script>
 </body>

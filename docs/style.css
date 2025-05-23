@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #0d61a2; /* Blue background */
+    background-color: #0B5FA1; /* Blue background */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -103,8 +103,7 @@ body {
     transform: translateX(-50%);
     height: calc(100vh - 140px); /* Fill screen minus top bar */
     width: calc((100vh - 120px) * 3 / 4); /* 3:4 aspect ratio */
-    object-fit: ; /* Crop to fill */
-    background-color: black;
+    background-color: #0B5FA1;
     bottom: 20px;
     z-index: 1;
   }
@@ -121,6 +120,15 @@ body {
     border: 4px #01131F;
     cursor: pointer;
     z-index: 2;
+    transition: transform 0.1s ease;
+  }
+
+  .photobutton:hover {
+    transform: translateX(-50%) scale(1.05);
+  }
+
+  .photobutton.pulse {
+    animation: pulse-grow2 0.3s ease;
   }
 
 .photo {
@@ -133,7 +141,7 @@ body {
   height: calc(100vh - 140px); /* Fill screen minus top bar */
   width: calc((100vh - 120px) * 3 / 4); /* 3:4 aspect ratio */
   object-fit: cover; /* Crop to fill */
-  background-color: black;
+  background-color: #0B5FA1;
   z-index: 1;
 }
   

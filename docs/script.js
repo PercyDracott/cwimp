@@ -39,89 +39,29 @@ if (window.location.pathname.endsWith("index.html")) {
     }, 300);
   }
 
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-const captureBtn = document.getElementById('capture');
-const photo = document.getElementById('photo');
-
-let stream = null;
-let imageCapture = null;
-
-async function startCamera() {
-  try {
-    // Try strict back camera first
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { exact: "environment" } }
-    });
-  } catch (err) {
-    console.warn("Back camera not found, falling back to any camera:", err);
-
-    // Fallback to any camera (front or back)
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: true
-    });
-  }
-
-  video.srcObject = stream;
-
-  const track = stream.getVideoTracks()[0];
-  if ('ImageCapture' in window) {
-    imageCapture = new ImageCapture(track);
-  }
-
-  captureBtn.disabled = false;
-  captureBtn.style.display = 'block';
-}
-
-
-captureBtn.addEventListener('click', () => {
-  if (imageCapture) {
-    // Use ImageCapture API to take photo
-    imageCapture.takePhoto()
-      .then(blob => {
-        const imgUrl = URL.createObjectURL(blob);
-        photo.src = imgUrl;
-        photo.style.display = 'block';
-
-        video.style.display = 'none';
-        captureBtn.disabled = true;
-        captureBtn.style.display = 'none';
-
-        stopCamera();
-      })
-      .catch(err => {
-        console.error('ImageCapture failed, falling back to canvas:', err);
-        captureWithCanvas();
-      });
-  } else {
-    // Fallback to canvas capture
-    captureWithCanvas();
-  }
-});
-
-function captureWithCanvas() {
-  const context = canvas.getContext('2d');
-
-  // Draw current video frame to canvas
-  context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-  // Convert to data URL and show
-  const imageDataURL = canvas.toDataURL('image/jpeg');
-  photo.src = imageDataURL;
-  photo.style.display = 'block';
-
-  video.style.display = 'none';
-  captureBtn.disabled = true;
-  captureBtn.style.display = 'none';
-
-  stopCamera();
-}
-
-function stopCamera() {
-  if (stream) {
-    stream.getTracks().forEach(track => track.stop());
-  }
-}
-
-// Start camera on page load
-startCamera();
+  const cameraInput = document.getElementById('cameraInput');
+  const openCameraBtn = document.getElementById('openCameraBtn');
+  const photo = document.getElementById('photo');
+  
+  openCameraBtn.addEventListener('click', () => {
+    openCameraBtn.classList.remove("pulse");
+    void openCameraBtn.offsetWidth; // Force reflow
+    openCameraBtn.classList.add("pulse");
+    
+    setTimeout(() => {
+      cameraInput.click(); 
+    }, 300);
+  });
+  
+  cameraInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+  
+    const imgURL = URL.createObjectURL(file);
+    photo.src = imgURL;
+    photo.style.display = 'block';
+  
+    // Optionally, hide the button after photo is taken
+    openCameraBtn.style.display = 'none';
+  });
+  
