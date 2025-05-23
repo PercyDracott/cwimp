@@ -104,8 +104,8 @@ if (window.location.pathname.endsWith("index.html")) {
     rawImage.src = rawFile;
   
     rawImage.onload = () => {
-      const rawWidth = rawImage.naturalWidth;
-      const rawHeight = rawImage.naturalHeight;
+      const rawWidth = rawImage.naturalHeight;
+      const rawHeight = rawImage.naturalWidth;
   
       overlay.setAttribute("width", img.width);
       overlay.setAttribute("height", img.height);
