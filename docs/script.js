@@ -58,16 +58,33 @@ if (window.location.pathname.endsWith("index.html")) {
     const file = event.target.files[0];
     if (!file) return;
   
-    const imgURL = URL.createObjectURL(file);
-    photo.src = imgURL;
-    photo.style.display = 'block';
+    // Correct orientation using blueimp-load-image
+    loadImage(
+      file,
+      async (canvas) => {
+        if (canvas.type === 'error') {
+          console.error('Error loading image');
+          return;
+        }
   
-    // Optionally, hide the button after photo is taken
-    openCameraBtn.style.display = 'none';
+        // Convert canvas to data URL for display
+        const imgURL = canvas.toDataURL('image/jpeg');
+        photo.src = imgURL;
+        photo.style.display = 'block';
   
-    // Run inference
-    const data = await runInference(file);
-    addHolds(data, imgURL);
+        openCameraBtn.style.display = 'none';
+  
+        // Convert canvas to blob for inference
+        canvas.toBlob(async (blob) => {
+          const data = await runInference(blob);
+          addHolds(data, imgURL); // Use rotated image for overlay
+        }, 'image/jpeg');
+      },
+      {
+        canvas: true,
+        orientation: true
+      }
+    );
   });
   
   async function runInference(file) {
@@ -86,35 +103,31 @@ if (window.location.pathname.endsWith("index.html")) {
   
       const result = await response.json();
       console.log('Inference result:', result);
-      
-      // Optional: Call a function to draw results on the image
-      // drawDetections(result, photo);
       return result;
-
+  
     } catch (error) {
       console.error('Inference error:', error);
     }
   }
-
-  function addHolds(data, rawFile) {
+  
+  function addHolds(data, imgURL) {
     console.log('add holds called');
     const overlay = document.getElementById("overlay");
     const img = document.getElementById("photo");
     const rawImage = new Image();
-    rawImage.src = rawFile;
+    rawImage.src = imgURL;
   
     rawImage.onload = () => {
-      const rawWidth = rawImage.naturalHeight;
-      const rawHeight = rawImage.naturalWidth;
+      const rawWidth = rawImage.naturalWidth;
+      const rawHeight = rawImage.naturalHeight;
   
       overlay.setAttribute("width", img.width);
       overlay.setAttribute("height", img.height);
       overlay.innerHTML = "";
   
       for (const pred of data.predictions) {
-        if (pred['confidence'] < 0.3) continue;
-        
-
+        if (pred['confidence'] < 0.4) continue;
+  
         const pointsAttr = pred.points
           .map(p => `${p.x * (img.width / rawWidth)},${p.y * (img.height / rawHeight)}`)
           .join(" ");
@@ -141,6 +154,7 @@ if (window.location.pathname.endsWith("index.html")) {
       }
     };
   }
+  
   
 
 
