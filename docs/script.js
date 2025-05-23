@@ -67,7 +67,7 @@ if (window.location.pathname.endsWith("index.html")) {
           return;
         }
     
-        const imgURL = canvas.toDataURL('image/jpeg');
+        const imgURL = canvas.toDataURL(file);
         photo.src = imgURL;
         photo.style.display = 'block';
         openCameraBtn.style.display = 'none';
