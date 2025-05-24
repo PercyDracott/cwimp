@@ -111,6 +111,8 @@ cameraInput.addEventListener('change', async (event) => {
     }
   }
   
+  let deleteMode = false;
+
   function addHolds(data, rawFile) {
     const overlay = document.getElementById("overlay");
     const img = document.getElementById("photo");
@@ -154,16 +156,19 @@ cameraInput.addEventListener('change', async (event) => {
   
         polygon.setAttribute("stroke", colors[0]);
         polygon.setAttribute("data-state", "0");
-        polygon.setAttribute("stroke-width", "20");
+        polygon.setAttribute("stroke-width", "10");
         polygon.setAttribute("fill", "none");
         polygon.style.cursor = 'pointer';
   
         polygon.addEventListener("click", () => {
+          if(deleteMode) overlay.removeChild(polygon);
+
           let currentState = parseInt(polygon.getAttribute("data-state"), 10);
           let nextState = (currentState + 1) % colors.length;
           polygon.setAttribute("stroke", colors[nextState]);
           polygon.setAttribute("data-state", nextState);
-          polygon.setAttribute("stroke-width", colors[nextState] === 'white' ? "20" : "40");
+          polygon.setAttribute("stroke-width", colors[nextState] === 'white' ? "10" : "20");
+          
         });
   
         overlay.appendChild(polygon);
@@ -187,6 +192,22 @@ cameraInput.addEventListener('change', async (event) => {
   });
   
 
-
+function toggleDelete()
+{
+  const editbtn = document.getElementById("editbutton");
+  if (deleteMode) 
+  {
+    deleteMode = false;
+    editbtn.style.backgroundColor = "#EEC021";
+  }
+  else 
+  {
+    deleteMode = true;
+    editbtn.style.backgroundColor = "Crimson";
+  }
+  editbtn.classList.remove("pulse");
+  void editbtn.offsetWidth; // Force reflow
+  editbtn.classList.add("pulse");
+}
 
   

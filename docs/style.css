@@ -171,4 +171,27 @@ svg {
   pointer-events: none; /* unless you want to capture clicks */
 }
 
+
+.editbutton:hover {
+  transform: scale(1.05);
+}
+
+.editbutton.pulse {
+  animation: pulse-grow 0.3s ease;
+}
+
+.editbutton {
+  position: fixed;
+  top: 35px;
+  right: 35px;
+  
+  width: 50px;
+  height: 50px;
+  border-radius: 20%;
+  background-color: #EEC021;
+  border: 4px #01131F;
+  cursor: pointer;
+  z-index: 2;
+  transition: transform 0.1s ease;
+}
   
