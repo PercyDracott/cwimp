@@ -154,7 +154,7 @@ cameraInput.addEventListener('change', async (event) => {
   
         polygon.setAttribute("stroke", colors[0]);
         polygon.setAttribute("data-state", "0");
-        polygon.setAttribute("stroke-width", "40");
+        polygon.setAttribute("stroke-width", "20");
         polygon.setAttribute("fill", "none");
         polygon.style.cursor = 'pointer';
   
@@ -163,7 +163,7 @@ cameraInput.addEventListener('change', async (event) => {
           let nextState = (currentState + 1) % colors.length;
           polygon.setAttribute("stroke", colors[nextState]);
           polygon.setAttribute("data-state", nextState);
-          polygon.setAttribute("stroke-width", colors[nextState] === 'white' ? "40" : "80");
+          polygon.setAttribute("stroke-width", colors[nextState] === 'white' ? "20" : "40");
         });
   
         overlay.appendChild(polygon);
