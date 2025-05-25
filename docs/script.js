@@ -1,3 +1,5 @@
+
+
 const logo = document.getElementById('logo');
 
 const cameraInput = document.getElementById('cameraInput');
@@ -112,6 +114,7 @@ cameraInput.addEventListener('change', async (event) => {
   }
   
   let deleteMode = false;
+  const polygonsArray = [];
 
   function addHolds(data, rawFile) {
     const overlay = document.getElementById("overlay");
@@ -141,7 +144,7 @@ cameraInput.addEventListener('change', async (event) => {
       overlay.innerHTML = "";
   
       for (const pred of data.predictions) {
-        if (pred['confidence'] < 0.3) continue;
+        if (pred['confidence'] < 0.05) continue;
   
         // Use raw pixel coordinates directly (no scaling)
         const pointsAttr = pred.points
@@ -172,6 +175,7 @@ cameraInput.addEventListener('change', async (event) => {
         });
   
         overlay.appendChild(polygon);
+        polygonsArray.push(polygon);
       }
     };
   }
@@ -208,6 +212,21 @@ function toggleDelete()
   editbtn.classList.remove("pulse");
   void editbtn.offsetWidth; // Force reflow
   editbtn.classList.add("pulse");
+}
+
+function clearfunc()
+{
+  const clearbtn = document.getElementById("clearbutton");
+  
+  clearbtn.classList.remove("pulse");
+  void clearbtn.offsetWidth; // Force reflow
+  clearbtn.classList.add("pulse");
+
+  polygonsArray.forEach(element => {
+    element.setAttribute("data-state", "0");
+    element.setAttribute("stroke", "white");
+    element.setAttribute("stroke-width", "10");
+  });
 }
 
   

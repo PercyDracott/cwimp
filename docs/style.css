@@ -184,7 +184,6 @@ svg {
   position: fixed;
   top: 35px;
   right: 35px;
-  
   width: 50px;
   height: 50px;
   border-radius: 20%;
@@ -195,3 +194,30 @@ svg {
   transition: transform 0.1s ease;
 }
   
+.clearbutton:hover {
+  transform: scale(1.05);
+}
+
+.clearbutton.pulse {
+  animation: pulse-grow 0.3s ease;
+}
+
+.clearbutton {
+  position: fixed;
+  top: 35px;
+  left: 35px;
+  width: 50px;
+  height: 50px;
+  border-radius: 20%;
+  background-color: #EEC021;
+  border: 4px #01131F;
+  cursor: pointer;
+  z-index: 2;
+  transition: transform 0.1s ease;
+}
+
+h1 {
+  margin: 0;    
+  padding: 0;          /* remove default h1 margin */
+  font-size: 2em;       /* optional: adjust size */
+}
